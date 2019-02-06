@@ -1,0 +1,11 @@
+.image-list-base{
+
+}
+.image-list-base .image-block{
+    padding: 10px;
+    text-align: center;
+}
+.image-list-base .image-block .comment-block{
+    margin: 5px 0 0 0;
+
+}

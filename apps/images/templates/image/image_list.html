@@ -2,67 +2,70 @@
 
 {% load thumbnail %}
 {% block content %}
+    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span
+                            class="sr-only">Закрыть</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-9">
+                                <img class="rounded mx-auto d-block" id="imagepreview" src="{{ image.image.url }}"
+                                     style="width: 100%;">
+                            </div>
+                            <div class="col-3 preview-image-comments">
+                                <div class="image-comment-block">
+                                    {% for foo in image.comments.all %}
+                                    <div>{{ foo }}</div>
+                                    {% endfor %}
+
+
+                                </div>
+                                <div class="image-comment-block">
+                                    <div>Мяу 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
 
-        <div class="row">
+        <div class="row image-list-base">
             {% for image in image_list %}
-                <div class="col-3">
-                    <a href="{% url 'image_detail' pk=image.id %}">
+                <div class="col-3 image-block" onclick="open_image_modal({{ image.pk }})">
+                    <a href="#" id="pop-{{ image.pk }}">
                         {% thumbnail image.image "150x150" crop="center" as im %}
-                            <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
+                            <img class="rounded mx-auto d-block" id="imageresource-{{ image.pk }}" src="{{ im.url }}"
+                                 width="{{ im.width }}"
                                  height="{{ im.height }}">
                         {% endthumbnail %}
                     </a>
 
-                    {% for com in image.comments.all %}
-                        <div class="text mx-auto">{{ com }}</div>
-                    {% endfor %}
-                    <button onclick="window.location.href='{% url 'comment_create' image_id=image.pk %}'"
-                            type="submit" class="btn btn-primary md-3">Добавить комментарий
-                    </button>
+
+                    <div class="comment-block">Комментарии ({{ image.comments.count }})</div>
+
+                    {#                    {% for com in image.comments.all %}#}
+                    {#                        <div class="text mx-auto">{{ com }}</div>#}
+                    {#                    {% endfor %}#}
+                    {#                    <button onclick="window.location.href='{% url 'comment_create' image_id=image.pk %}'"#}
+                    {#                            type="submit" class="btn btn-primary md-3">Добавить комментарий#}
+                    {#                    </button>#}
                 </div>
             {% endfor %}
 
-
-            {% comment %}
-            <div class="col-12">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Изображение</th>
-                        <th>Дата создания</th>
-                        <th>Комментарии</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for image in image_list %}
-                        <tr>
-                            <td>
-                                <a href="{{ image.image.url }}">
-                                    {% thumbnail image.image "150x150" crop="center" as im %}
-                                        <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
-                                             height="{{ im.height }}">
-                                    {% endthumbnail %}
-                                </a>
-                            </td>
-                            <td>{{ image.created_at }}</td>
-                            <td>
-
-                                {% for com in image.comments.all %}
-                                    <p>{{ com }}</p>
-                                {% endfor %}
-                                <button onclick="window.location.href='{% url 'comment_create' image_id=image.pk %}'"
-                                        type="submit" class="btn btn-primary">Добавить комментарий
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% endcomment %}
             {% if is_paginated %}
                 <nav aria-label="...">
                     <ul class="pagination justify-content-center">
@@ -90,4 +93,11 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+{% block extrascripts %}
+    function open_image_modal(id){
+    var img_block = $("#pop-" + id);
+    $('#imagepreview').attr('src', img_block.find('#imageresource-' + id).attr('src'));
+    $('#imagemodal').modal('show');
+    }
 {% endblock %}
