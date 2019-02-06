@@ -3,7 +3,28 @@
 {% load thumbnail %}
 {% block content %}
     <div class="container-fluid">
+
         <div class="row">
+            {% for image in image_list %}
+                <div class="col-3">
+                    <a href="{% url 'image_detail' pk=image.id %}">
+                        {% thumbnail image.image "150x150" crop="center" as im %}
+                            <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
+                                 height="{{ im.height }}">
+                        {% endthumbnail %}
+                    </a>
+
+                    {% for com in image.comments.all %}
+                        <div class="text mx-auto">{{ com }}</div>
+                    {% endfor %}
+                    <button onclick="window.location.href='{% url 'comment_create' image_id=image.pk %}'"
+                            type="submit" class="btn btn-primary md-3">Добавить комментарий
+                    </button>
+                </div>
+            {% endfor %}
+
+
+            {% comment %}
             <div class="col-12">
                 <table class="table table-hover">
                     <thead>
@@ -41,28 +62,32 @@
             </div>
         </div>
     </div>
-    {% if is_paginated %}
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                <li class="page-item ">
-                    {% if page_obj.has_previous %}
-                        <a class="page-link" href="{% url 'image_list' %}?page={{ page_obj.previous_page_number }}"
-                           tabindex="-1">{{ page_obj.previous_page_number }}</a>
-                    {% endif %}
-                </li>
+    {% endcomment %}
+            {% if is_paginated %}
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item ">
+                            {% if page_obj.has_previous %}
+                                <a class="page-link"
+                                   href="{% url 'image_list' %}?page={{ page_obj.previous_page_number }}"
+                                   tabindex="-1">{{ page_obj.previous_page_number }}</a>
+                            {% endif %}
+                        </li>
 
-                <li class="page-item active">
-                    <a class="page-link" href="#"> {{ page_obj.number }} <span class="sr-only">(current)</span></a>
-                </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#"> {{ page_obj.number }} <span class="sr-only">(current)</span></a>
+                        </li>
 
-                <li class="page-item">
-                    {% if page_obj.has_next %}
-                        <a class="page-link"
-                           href="{% url 'image_list' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-                    {% endif %}
-                </li>
+                        <li class="page-item">
+                            {% if page_obj.has_next %}
+                                <a class="page-link"
+                                   href="{% url 'image_list' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                            {% endif %}
+                        </li>
 
-            </ul>
-        </nav>
-    {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
