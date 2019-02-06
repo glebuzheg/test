@@ -15,7 +15,7 @@ class CommentCreateView(CreateView):
     form_class = CommentForm
 
     def get_success_url(self):
-        return reverse('image_detail', args=[self.image.id])
+        return reverse('image_list')
 
     def get_context_data(self, **kwargs):
         self.image = get_object_or_404(Image, id=self.kwargs['image_id'])

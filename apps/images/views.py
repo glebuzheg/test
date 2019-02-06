@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
@@ -12,6 +13,13 @@ class ImageCreateView(CreateView):
     template_name = 'image/image_create.html'
     model = Image
     form_class = BaseImageForm
+
+    def form_valid(self, form):
+        instance = self.object = form.save()
+        if form.cleaned_data.get('comment'):
+            comm = instance.comments.create(text=form.cleaned_data['comment'])
+            comm.save()
+        return HttpResponseRedirect(reverse('image_list'))
 
 
 class ImageDetailView(DetailView):

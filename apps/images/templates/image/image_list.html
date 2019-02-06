@@ -17,7 +17,7 @@
                     {% for image in image_list %}
                         <tr>
                             <td>
-                               <a href="{{ image.image.url }}">
+                                <a href="{{ image.image.url }}">
                                     {% thumbnail image.image "150x150" crop="center" as im %}
                                         <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
                                              height="{{ im.height }}">
@@ -26,9 +26,13 @@
                             </td>
                             <td>{{ image.created_at }}</td>
                             <td>
+
                                 {% for com in image.comments.all %}
                                     <p>{{ com }}</p>
                                 {% endfor %}
+                                <button onclick="window.location.href='{% url 'comment_create' image_id=image.pk %}'"
+                                        type="submit" class="btn btn-primary">Добавить комментарий
+                                </button>
                             </td>
                         </tr>
                     {% endfor %}
