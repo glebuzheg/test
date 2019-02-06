@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block content %}
+
+    <p>{% thumbnail image.image "150x150" crop="center" as im %}
+        <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
+             height="{{ im.height }}">
+    {% endthumbnail %}</p>
+    {% for comment in image.comments.all %}
+        <p>{{ comment }}</p>
+    {% endfor %}
+{% endblock %}

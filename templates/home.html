@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-4">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action active" href="{% url "home" %}">Home</a>
+                <a class="list-group-item list-group-item-action" href="{% url "image_list" %}">Images</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

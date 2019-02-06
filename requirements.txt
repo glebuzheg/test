@@ -1,0 +1,5 @@
+django==2.1.5
+psycopg2
+Pillow
+sorl-thumbnail
+django-widget-tweaks==1.4.1

@@ -1,0 +1,108 @@
+{% load field_tags %}
+{% load thumbnail %}
+
+{% for field in form %}
+    {% if field|field_type == "TextInput" %}
+        <div class="form-group">
+
+            <label for="{{ field.auto_id }}"> {{ field.label }}</label>
+            <input class="form-control {% if field.errors %} is-invalid {% endif %}" name="{{ field.name }}"
+                   type="text"
+                   placeholder="{{ field.label }}"
+                   id="{{ field.auto_id }}" value="{% if field.value %}{{ field.value }}{% endif %}">
+
+            {% for error in field.errors %}
+                <div class="invalid-feedback " style="display: block;">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+    {% elif field|field_type == "PasswordInput" %}
+        <div class="form-group">
+
+            <label for="{{ field.auto_id }}"> {{ field.label }}</label>
+            <input class="form-control {% if field.errors %} is-invalid {% endif %}" name="{{ field.name }}"
+                   type="password"
+                   placeholder="{{ field.label }}"
+                   id="{{ field.auto_id }}" value="{% if field.value %}{{ field.value }}{% endif %}">
+
+            {% for error in field.errors %}
+                <div class="invalid-feedback " style="display: block;">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+    {% elif field|field_type == "EmailInput" %}
+        <div class="form-group">
+
+            <label for="{{ field.auto_id }}"> {{ field.label }}</label>
+            <input class="form-control {% if field.errors %} is-invalid {% endif %}" name="{{ field.name }}"
+                   type="email"
+                   placeholder="{{ field.label }}"
+                   id="{{ field.auto_id }}" value="{% if field.value %}{{ field.value }}{% endif %}">
+
+            {% for error in field.errors %}
+                <div class="invalid-feedback " style="display: block;">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+        </div>
+    {% elif field|field_type == "Select" %}
+        <div class="form-group">
+            <label for="{{ field.auto_id }}">{{ field.label }}</label>
+            <select class="form-control {% if field.errors %} is-invalid {% endif %}" id="{{ field.auto_id }}"
+                    name="{{ field.name }}">
+                {% for foo in field %}
+                    {{ foo }}
+                {% endfor %}
+            </select>
+            {% for error in field.errors %}
+                <div class="invalid-feedback " style="display: block;">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+
+    {% elif field|field_type == "CheckboxInput" %}
+        <div class="form-group {% if field.errors %} is-invalid {% endif %}">
+            <label class="custom-control custom-checkbox" for="{{ field.auto_id }}">
+                <input type="checkbox" class="custom-control-input" {% if field.initial %}checked{% endif %}
+                       name="{{ field.name }}"
+                       id="{{ field.auto_id }}">
+                <span class="custom-control-description">{{ field.label }}</span>
+                <span class="custom-control-indicator"></span>
+            </label>
+            {% for error in field.errors %}
+                <div class="invalid-feedback " style="display: block;">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+
+    {% elif field|field_type == "ClearableFileInput" %}
+
+        {% if field.initial %}
+            {% thumbnail field.initial "150x150" crop="center" as im %}
+                <img class="rounded mx-auto d-block" src="{{ im.url }}" width="{{ im.width }}"
+                     height="{{ im.height }}">
+            {% endthumbnail %}
+        {% endif %}
+
+
+        <div class="row">
+            <div class="col-lg-10 offset-lg-5">
+                <div class="form-group">
+                    <label class="custom-file" for="{{ field.auto_id }}">
+                        <input type="file" class="custom-file-input" name="{{ field.name }}"
+                               id="{{ field.auto_id }}">
+                        <span class="custom-file-control"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+{% endfor %}
