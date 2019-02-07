@@ -1,12 +1,10 @@
-from django.shortcuts import render, get_object_or_404
-
-# Create your views here.
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView
 
 from apps.images.models import Image
-from .models import Comment
 from .forms import CommentForm
+from .models import Comment
 
 
 class CommentCreateView(CreateView):
@@ -26,7 +24,3 @@ class CommentCreateView(CreateView):
         self.image = get_object_or_404(Image, id=self.kwargs['image_id'])
         form.instance.image = self.image
         return super().form_valid(form)
-
-
-class CommentListView(ListView):
-    pass

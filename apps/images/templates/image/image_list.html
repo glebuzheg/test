@@ -15,20 +15,21 @@
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-12">
                                 <img class="rounded mx-auto d-block" id="imagepreview" src="{{ image.image.url }}"
                                      style="width: 100%;">
                             </div>
-                            <div class="col-3 preview-image-comments">
-                                <div class="image-comment-block">
-                                    {% for foo in image.comments.all %}
-                                    <div>{{ foo }}</div>
-                                    {% endfor %}
-
-
-                                </div>
-                                <div class="image-comment-block">
-                                    <div>Мяу 2</div>
+                            <div class="col-12 preview-image-comments">
+                                <div id="modal-image-comment-list"></div>
+                                <div>
+                                    <form action="" enctype="multipart/form-data" method="post" id="comment-form"
+                                          data-id="">
+                                        {% csrf_token %}
+                                        <input type="text" id="comment-text" size="40">
+                                        <button type="submit" class="btn btn-default" data-dismiss="modal"
+                                                id="comment-create-button">Добавить
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +37,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Добавить</button>
                 </div>
             </div>
         </div>
@@ -95,9 +95,64 @@
     </div>
 {% endblock %}
 {% block extrascripts %}
-    function open_image_modal(id){
-    var img_block = $("#pop-" + id);
-    $('#imagepreview').attr('src', img_block.find('#imageresource-' + id).attr('src'));
-    $('#imagemodal').modal('show');
-    }
+    <script type="application/javascript">
+        function init_comment(msg) {
+            var elementCommentBlock = $('<div/>', {
+                text: msg,
+                class: 'image-comment-block',
+            });
+            return elementCommentBlock;
+        }
+
+        $('#comment-create-button').click(function () {
+            var form = $('#comment-form');
+
+            var image_id = form.attr('data-id');
+
+            $.ajax({
+                method: "POST",
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    text: $('#comment-text').val(),
+                },
+                headers:
+                    {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url:
+                "/comment/" + image_id + "/create/",
+                success: function (response) {
+                    alert("lol");
+                    document.getElementById("comment").innerHTML = response;
+                }
+
+                ,
+                error: function () {
+                    alert("error");
+                }
+            });
+        })
+        ;
+
+        function open_image_modal(id) {
+            var img_block = $("#pop-" + id);
+            $('#imagepreview').attr('src', img_block.find('#imageresource-' + id).attr('src'));
+            $('#comment-form').attr('data-id', id);
+
+            $('#imagemodal').modal('show');
+
+            var commentBlock = $('#modal-image-comment-list');
+            commentBlock.empty();
+
+            $.ajax({
+                method: "GET",
+                url: "/image/" + id + "/comments"
+            }).done(function (data) {
+                var arr = data['comments'];
+                var msg = '';
+                arr.forEach(function (item, i, arr) {
+                    msg = item['text'];
+                    commentBlock.append(init_comment(msg))
+                });
+            });
+        }
+    </script>
 {% endblock %}
