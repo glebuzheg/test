@@ -26,8 +26,8 @@
                                           data-id="">
                                         {% csrf_token %}
                                         <input type="text" id="comment-text" size="40">
-                                        <button type="submit" class="btn btn-default" data-dismiss="modal"
-                                                id="comment-create-button">Добавить
+                                        <button type="button" class="btn btn-primary" id="comment-create-button">
+                                            Добавить
                                         </button>
                                     </form>
                                 </div>
@@ -117,14 +117,11 @@
                 },
                 headers:
                     {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url:
-                "/comment/" + image_id + "/create/",
+                url: "/comment/" + image_id + "/create/",
                 success: function (response) {
-                    alert("lol");
-                    document.getElementById("comment").innerHTML = response;
-                }
-
-                ,
+                    $('#comment-text').reset();
+                    get_list_comments(image_id)
+                },
                 error: function () {
                     alert("error");
                 }
@@ -136,12 +133,13 @@
             var img_block = $("#pop-" + id);
             $('#imagepreview').attr('src', img_block.find('#imageresource-' + id).attr('src'));
             $('#comment-form').attr('data-id', id);
-
             $('#imagemodal').modal('show');
+            get_list_comments(id)
+        }
 
+        function get_list_comments(id) {
             var commentBlock = $('#modal-image-comment-list');
             commentBlock.empty();
-
             $.ajax({
                 method: "GET",
                 url: "/image/" + id + "/comments"

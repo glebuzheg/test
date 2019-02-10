@@ -2,12 +2,18 @@
 
 {% load thumbnail %}
 {% block content %}
-    <form action="" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        <div class="form-class">
-            {% include 'render_fields.html' with form=form %}
+    <div class="container-fluid">
+        <div class="row create-image">
+            <form action="" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <div class="form-class">
+                    {% include 'render_fields.html' with form=form %}
+                </div>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
+
         </div>
-        <button type="submit" class="btn btn-success">Сохранить</button>
-    </form>
+    </div>
+
 {% endblock %}
 
